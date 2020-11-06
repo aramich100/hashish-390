@@ -1,4 +1,4 @@
-# hashish-390
+# Hashish-390
 
 COEN/ELEC 390 - Fall 2020
 
