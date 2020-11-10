@@ -37,7 +37,24 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         setUpUI();
-        setUpBluetooth();
+
+
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        System.out.println("ID IS : ******" + btAdapter.getBondedDevices());
+
+        BluetoothDevice hc05 = btAdapter.getRemoteDevice("00:18:91:D7:28:92");
+        System.out.println(hc05.getName());
+
+        BluetoothSocket btSocket = null;
+
+        //Creation of Thread for bluetooth
+        ConnectThread mConnectThread = new ConnectThread(hc05);
+        mConnectThread.start();
+
+        //DataThread mDataThread = new DataThread(btSocket);
+       // mDataThread.start();
+
+        //setUpBluetooth();
 
 
 
@@ -54,6 +71,10 @@ public class Profile extends AppCompatActivity {
 
         BluetoothSocket btSocket = null;
 
+        //Creation of Thread for bluetooth
+        ConnectThread mConnectThread = new ConnectThread(hc05);
+        mConnectThread.start();
+
 
             try {
                 btSocket = hc05.createRfcommSocketToServiceRecord(mUUID);
@@ -65,36 +86,8 @@ public class Profile extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-/*
-        try {
-            OutputStream outputStream = btSocket.getOutputStream();
-            outputStream.write(48);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
-        InputStream inputStream = null;
-        try {
 
-           // byte[] rawBytes = new byte[2];
-           // inputStream.read(rawBytes);
-           // final String temp = new String(rawBytes,"UTF-8");
-
-            inputStream = btSocket.getInputStream();
-            //inputStream.skip(inputStream.available());
-
-            for(int j=0; j<10; j++){
-                System.out.print("Temp is : ");
-            for(int i=0; i<2; i++) {
-                char temp = (char) inputStream.read();
-                System.out.print(temp);
-            }
-                System.out.println();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
         try {
