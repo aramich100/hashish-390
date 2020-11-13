@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -17,6 +20,7 @@ import android.os.Bundle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.PriorityQueue;
 import java.util.UUID;
 
 
@@ -30,6 +34,7 @@ public class Profile extends AppCompatActivity {
     protected Button offButton;
     protected Button save;
     protected Button next;
+    protected TextView tempView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +52,31 @@ public class Profile extends AppCompatActivity {
 
         BluetoothSocket btSocket = null;
 
+        PriorityQueue<String> q = new PriorityQueue<String>();
+
+
         //Creation of Thread for bluetooth
         ConnectThread mConnectThread = new ConnectThread(hc05);
         mConnectThread.start();
 
-        //DataThread mDataThread = new DataThread(btSocket);
-       // mDataThread.start();
+        DataThread d = new DataThread(q);
 
-        //setUpBluetooth();
+        System.out.println(d.q);
+
+        for(int i=0; i<100; i++){
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
 
 
-
+                //System.out.println("Temp is : "+ mConnectThread.getTemp());
+                tempView.setText(mConnectThread.getTemp());
+            }
+        }, 3000*i);}
     }
 
-
+/*
     protected void setUpBluetooth(){
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         System.out.println("ID IS : ******" + btAdapter.getBondedDevices());
@@ -86,17 +101,13 @@ public class Profile extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
-
-
-
         try {
             btSocket.close();
             System.out.println(btSocket.isConnected());
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
 
@@ -106,6 +117,7 @@ public class Profile extends AppCompatActivity {
         next = findViewById(R.id.nextPage);
         onButton = findViewById(R.id.onButton);
         offButton = findViewById(R.id.onButton);
+        tempView = findViewById(R.id.tempView);
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
